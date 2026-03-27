@@ -1,0 +1,104 @@
+<section class="page-shell" *ngIf="!isLoadingRoute; else loading">
+  <p class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <ng-container *ngIf="routeDetail as route">
+    <div class="booking-layout">
+      <article class="route-panel">
+        <p class="eyebrow">Route summary</p>
+        <h1>{{ route.bus_name }}</h1>
+        <p class="operator">{{ route.operator_name }} · {{ route.bus_type }} · {{ route.bus_number }}</p>
+
+        <div class="timeline">
+          <div>
+            <strong>{{ route.departure_city }}</strong>
+            <span>{{ formatTime(route.departure_time) }}</span>
+          </div>
+          <div class="arrow">to</div>
+          <div>
+            <strong>{{ route.arrival_city }}</strong>
+            <span>{{ formatTime(route.arrival_time) }}</span>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <article>
+            <span>Price per seat</span>
+            <strong>Rs. {{ route.price }}</strong>
+          </article>
+          <article>
+            <span>Available seats</span>
+            <strong>{{ route.available_seats }}</strong>
+          </article>
+          <article>
+            <span>Selected</span>
+            <strong>{{ selectedSeats.length }}</strong>
+          </article>
+          <article>
+            <span>Total</span>
+            <strong>Rs. {{ totalAmount }}</strong>
+          </article>
+        </div>
+
+        <div class="amenities" *ngIf="route.amenities?.length">
+          <span *ngFor="let amenity of route.amenities">{{ amenity }}</span>
+        </div>
+
+        <app-seat-selector
+          [totalSeats]="route.total_seats"
+          [availableSeats]="route.available_seats"
+          [selectedSeats]="selectedSeats"
+          (selectedSeatsChange)="updateSelectedSeats($event)">
+        </app-seat-selector>
+      </article>
+
+      <form class="checkout-panel" [formGroup]="bookingForm" (ngSubmit)="submitBooking()">
+        <p class="eyebrow">Passenger and payment</p>
+        <h2>Confirm this trip</h2>
+
+        <label>
+          <span>Passenger name</span>
+          <input type="text" formControlName="passenger_name" />
+        </label>
+
+        <label>
+          <span>Email</span>
+          <input type="email" formControlName="passenger_email" />
+        </label>
+
+        <label>
+          <span>Phone</span>
+          <input type="text" formControlName="passenger_phone" />
+        </label>
+
+        <label>
+          <span>Payment method</span>
+          <select formControlName="payment_method">
+            <option value="upi">UPI</option>
+            <option value="card">Card</option>
+            <option value="netbanking">Net Banking</option>
+          </select>
+        </label>
+
+        <div class="selected-seats">
+          <span>Selected seats</span>
+          <strong>{{ selectedSeats.length ? selectedSeats.join(', ') : 'No seats selected yet' }}</strong>
+        </div>
+
+        <div class="selected-seats">
+          <span>Amount to pay</span>
+          <strong>Rs. {{ totalAmount }}</strong>
+        </div>
+
+        <p class="feedback success" *ngIf="successMessage">{{ successMessage }}</p>
+
+        <button type="submit" [disabled]="isSubmitting || !selectedSeats.length">
+          {{ isSubmitting ? 'Processing booking...' : 'Book and pay now' }}
+        </button>
+      </form>
+    </div>
+  </ng-container>
+</section>
+
+<ng-template #loading>
+  <p class="feedback">Loading route details...</p>
+</ng-template>

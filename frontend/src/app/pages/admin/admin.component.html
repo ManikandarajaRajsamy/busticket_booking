@@ -1,0 +1,322 @@
+﻿<section class="admin-shell">
+  <header class="dashboard-header panel">
+    <div class="header-copy">
+      <p class="eyebrow">Operations dashboard</p>
+      <h1>Admin control center</h1>
+      <p class="subcopy">Manage fleet inventory, publish routes, and keep an eye on booking activity from one streamlined workspace.</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="ghost-button" (click)="loadAdminData()">Refresh data</button>
+      <button type="button" (click)="setActiveTab('buses')">Add bus</button>
+      <button type="button" (click)="setActiveTab('routes')">Create route</button>
+    </div>
+  </header>
+
+  <p class="feedback error" *ngIf="pageError">{{ pageError }}</p>
+  <p class="feedback" *ngIf="isLoading">Loading admin data...</p>
+
+  <section class="stats-grid" *ngIf="dashboard as stats">
+    <article class="stat-card panel">
+      <div class="stat-meta">
+        <span class="stat-label">Total users</span>
+        <span class="stat-chip">Accounts</span>
+      </div>
+      <strong>{{ stats.total_users }}</strong>
+      <p>Registered customers with access to bookings and account history.</p>
+    </article>
+
+    <article class="stat-card panel">
+      <div class="stat-meta">
+        <span class="stat-label">Total bookings</span>
+        <span class="stat-chip">Orders</span>
+      </div>
+      <strong>{{ stats.total_bookings }}</strong>
+      <p>All reservations processed through the platform so far.</p>
+    </article>
+
+    <article class="stat-card panel emphasis-card">
+      <div class="stat-meta">
+        <span class="stat-label">Pending bookings</span>
+        <span class="stat-chip">Attention</span>
+      </div>
+      <strong>{{ stats.pending_bookings }}</strong>
+      <p>Reservations still waiting for completion or payment confirmation.</p>
+    </article>
+
+    <article class="stat-card panel revenue-card">
+      <div class="stat-meta">
+        <span class="stat-label">Revenue</span>
+        <span class="stat-chip">Gross</span>
+      </div>
+      <strong>Rs. {{ stats.total_revenue }}</strong>
+      <p>Top-line booking revenue currently recorded by the system.</p>
+    </article>
+  </section>
+
+  <section class="workspace-grid">
+    <nav class="tabs panel">
+      <div class="tabs-heading">
+        <p class="eyebrow">Workspace</p>
+        <h2>Navigate modules</h2>
+      </div>
+
+      <button
+        *ngFor="let tab of tabs"
+        type="button"
+        class="tab-button"
+        [class.active]="activeTab === tab.key"
+        (click)="setActiveTab(tab.key)">
+        {{ tab.label }}
+      </button>
+    </nav>
+
+    <aside class="panel spotlight-panel">
+      <div class="section-head compact-head">
+        <div>
+          <p class="eyebrow">Live snapshot</p>
+          <h2>System posture</h2>
+        </div>
+      </div>
+
+      <div class="spotlight-metrics">
+        <article>
+          <span>Fleet tracked</span>
+          <strong>{{ buses.length }}</strong>
+        </article>
+        <article>
+          <span>Routes live</span>
+          <strong>{{ routes.length }}</strong>
+        </article>
+        <article>
+          <span>Bookings listed</span>
+          <strong>{{ bookings.length }}</strong>
+        </article>
+      </div>
+
+      <p class="muted">Use the tabs to move between overview, inventory management, and booking operations without leaving the dashboard context.</p>
+    </aside>
+  </section>
+
+  <section class="tab-content" *ngIf="activeTab === 'overview'">
+    <div class="overview-top-grid">
+      <section class="panel summary-panel">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Overview</p>
+            <h2>Operational summary</h2>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <article>
+            <span>Fleet records</span>
+            <strong>{{ buses.length }}</strong>
+            <p>Configured buses ready for scheduling.</p>
+          </article>
+          <article>
+            <span>Active routes</span>
+            <strong>{{ routes.length }}</strong>
+            <p>Published trips currently available in the system.</p>
+          </article>
+          <article>
+            <span>Booking records</span>
+            <strong>{{ bookings.length }}</strong>
+            <p>Passenger reservations visible to the admin team.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel quick-actions-panel">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Actions</p>
+            <h2>Common admin tasks</h2>
+          </div>
+        </div>
+
+        <div class="action-list">
+          <button type="button" class="ghost-button action-button" (click)="setActiveTab('buses')">Create a new bus record</button>
+          <button type="button" class="ghost-button action-button" (click)="setActiveTab('routes')">Publish a route schedule</button>
+          <button type="button" class="ghost-button action-button" (click)="setActiveTab('bookings')">Review booking activity</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="overview-grid">
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Buses</p>
+            <h2>Current fleet</h2>
+          </div>
+          <span class="section-badge">{{ buses.length }} bus(es)</span>
+        </div>
+        <div class="list" *ngIf="buses.length; else noBusesOverview">
+          <article class="list-item" *ngFor="let bus of buses | slice:0:4">
+            <div class="item-topline">
+              <strong>{{ bus.bus_name }}</strong>
+              <span class="item-badge">{{ bus.bus_type }}</span>
+            </div>
+            <span>{{ bus.bus_number }}</span>
+            <span>{{ bus.operator_name }} - {{ bus.total_seats }} seats</span>
+          </article>
+        </div>
+        <ng-template #noBusesOverview>
+          <p class="muted">No buses configured yet.</p>
+        </ng-template>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Routes</p>
+            <h2>Published inventory</h2>
+          </div>
+          <span class="section-badge">{{ routes.length }} route(s)</span>
+        </div>
+        <div class="list" *ngIf="routes.length; else noRoutesOverview">
+          <article class="list-item" *ngFor="let route of routes | slice:0:4">
+            <div class="item-topline">
+              <strong>{{ route.bus_name }}</strong>
+              <span class="item-badge">Rs. {{ route.price }}</span>
+            </div>
+            <span>{{ route.departure_city }} to {{ route.arrival_city }}</span>
+            <span>{{ formatDate(route.departure_time) }}</span>
+          </article>
+        </div>
+        <ng-template #noRoutesOverview>
+          <p class="muted">No routes configured yet.</p>
+        </ng-template>
+      </section>
+    </div>
+  </section>
+
+  <section class="tab-content" *ngIf="activeTab === 'buses'">
+    <div class="admin-grid">
+      <form class="panel form-panel" [formGroup]="busForm" (ngSubmit)="createBus()">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Fleet management</p>
+            <h2>Create bus</h2>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label><span>Bus name</span><input type="text" formControlName="bus_name"></label>
+          <label><span>Bus number</span><input type="text" formControlName="bus_number"></label>
+          <label><span>Bus type</span><input type="text" formControlName="bus_type"></label>
+          <label><span>Total seats</span><input type="number" formControlName="total_seats"></label>
+          <label><span>Operator name</span><input type="text" formControlName="operator_name"></label>
+          <label class="full-span"><span>Amenities</span><input type="text" formControlName="amenities" placeholder="WiFi, Blanket, Charging Port"></label>
+        </div>
+
+        <p class="feedback success" *ngIf="busSuccess">{{ busSuccess }}</p>
+        <button type="submit" [disabled]="isSubmittingBus">{{ isSubmittingBus ? 'Creating bus...' : 'Create bus' }}</button>
+      </form>
+
+      <section class="panel records-panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Bus records</p>
+            <h2>Tracked fleet data</h2>
+          </div>
+          <span class="section-badge">{{ buses.length }} bus(es)</span>
+        </div>
+        <div class="list" *ngIf="buses.length; else noBuses">
+          <article class="list-item record-item" *ngFor="let bus of buses">
+            <div class="item-topline">
+              <strong>{{ bus.bus_name }}</strong>
+              <span class="item-badge">ID {{ bus.bus_id }}</span>
+            </div>
+            <span>{{ bus.bus_number }} - {{ bus.bus_type }} - {{ bus.total_seats }} seats</span>
+            <span>{{ bus.operator_name }}</span>
+            <span *ngIf="bus.amenities.length">{{ bus.amenities.join(', ') }}</span>
+          </article>
+        </div>
+        <ng-template #noBuses>
+          <p class="muted">No bus records yet.</p>
+        </ng-template>
+      </section>
+    </div>
+  </section>
+
+  <section class="tab-content" *ngIf="activeTab === 'routes'">
+    <div class="admin-grid">
+      <form class="panel form-panel" [formGroup]="routeForm" (ngSubmit)="createRoute()">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Route management</p>
+            <h2>Create route</h2>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label><span>Bus ID</span><input type="text" formControlName="bus_id"></label>
+          <label><span>Departure city</span><input type="text" formControlName="departure_city"></label>
+          <label><span>Arrival city</span><input type="text" formControlName="arrival_city"></label>
+          <label><span>Departure time</span><input type="datetime-local" formControlName="departure_time"></label>
+          <label><span>Arrival time</span><input type="datetime-local" formControlName="arrival_time"></label>
+          <label><span>Price</span><input type="number" formControlName="price"></label>
+          <label><span>Distance (km)</span><input type="number" formControlName="distance"></label>
+          <label><span>Duration</span><input type="text" formControlName="duration"></label>
+          <label class="full-span"><span>Available seats</span><input type="number" formControlName="available_seats"></label>
+        </div>
+
+        <p class="feedback success" *ngIf="routeSuccess">{{ routeSuccess }}</p>
+        <button type="submit" [disabled]="isSubmittingRoute">{{ isSubmittingRoute ? 'Creating route...' : 'Create route' }}</button>
+      </form>
+
+      <section class="panel records-panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Route records</p>
+            <h2>Tracked route data</h2>
+          </div>
+          <span class="section-badge">{{ routes.length }} route(s)</span>
+        </div>
+        <div class="list" *ngIf="routes.length; else noRoutes">
+          <article class="list-item record-item" *ngFor="let route of routes">
+            <div class="item-topline">
+              <strong>{{ route.bus_name }}</strong>
+              <span class="item-badge">ID {{ route.route_id }}</span>
+            </div>
+            <span>Bus ID {{ route.bus_id }}</span>
+            <span>{{ route.departure_city }} to {{ route.arrival_city }}</span>
+            <span>{{ formatDate(route.departure_time) }} to {{ formatDate(route.arrival_time) }}</span>
+            <span>Rs. {{ route.price }} - {{ route.available_seats }} seats</span>
+          </article>
+        </div>
+        <ng-template #noRoutes>
+          <p class="muted">No route records yet.</p>
+        </ng-template>
+      </section>
+    </div>
+  </section>
+
+  <section class="tab-content" *ngIf="activeTab === 'bookings'">
+    <section class="panel records-panel bookings-panel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Booking records</p>
+          <h2>Tracked passenger activity</h2>
+        </div>
+        <span class="section-badge">{{ bookings.length }} booking(s)</span>
+      </div>
+      <div class="list bookings-list" *ngIf="bookings.length; else noBookings">
+        <article class="list-item record-item" *ngFor="let booking of bookings">
+          <div class="item-topline">
+            <strong>{{ booking.passenger_name }}</strong>
+            <span class="item-badge status-badge">{{ booking.status }}</span>
+          </div>
+          <span>User: {{ booking.user }}</span>
+          <span>{{ booking.route }}</span>
+          <span>Rs. {{ booking.total_price }} - {{ formatDate(booking.booking_date) }}</span>
+        </article>
+      </div>
+      <ng-template #noBookings>
+        <p class="muted">No booking records yet.</p>
+      </ng-template>
+    </section>
+  </section>
+</section>

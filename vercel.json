@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "node scripts/set-production-api.mjs && cd frontend && npm ci && npm run build",
+  "outputDirectory": "frontend/dist/redbus-clone",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

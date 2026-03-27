@@ -1,0 +1,27 @@
+<div class="legend">
+  <span><i class="seat available"></i> Available</span>
+  <span><i class="seat selected"></i> Selected</span>
+  <span><i class="seat unavailable"></i> Unavailable</span>
+</div>
+
+<div class="seat-grid" *ngIf="seats.length; else noSeats">
+  <button
+    *ngFor="let seat of seats; trackBy: trackSeat"
+    type="button"
+    class="seat"
+    [class.available]="seat.available"
+    [class.selected]="seat.selected"
+    [class.unavailable]="!seat.available"
+    [disabled]="!seat.available"
+    (click)="toggleSeat(seat)">
+    {{ seat.label }}
+  </button>
+</div>
+
+<ng-template #noSeats>
+  <p class="hint">Seat map will appear once route details are loaded.</p>
+</ng-template>
+
+<p class="note" *ngIf="seats.length">
+  The current backend exposes seat availability as a count, so the first {{ availableSeats }} seats are shown as available.
+</p>

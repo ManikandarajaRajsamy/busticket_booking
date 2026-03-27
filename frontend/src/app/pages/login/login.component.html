@@ -1,0 +1,32 @@
+<section class="auth-layout">
+  <div class="auth-copy">
+    <p class="eyebrow">Welcome back</p>
+    <h1>Pick up your journey where you left it.</h1>
+    <p>Log in to book routes, complete payments, and track every ticket in one place.</p>
+  </div>
+
+  <form class="auth-card" [formGroup]="loginForm" (ngSubmit)="submit()">
+    <h2>Login</h2>
+
+    <label>
+      <span>Username</span>
+      <input type="text" formControlName="username" placeholder="Enter your username" />
+    </label>
+
+    <label>
+      <span>Password</span>
+      <input type="password" formControlName="password" placeholder="Enter your password" />
+    </label>
+
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <button type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Signing in...' : 'Sign in' }}
+    </button>
+
+    <p class="auth-link">
+      New here?
+      <a routerLink="/register">Create an account</a>
+    </p>
+  </form>
+</section>

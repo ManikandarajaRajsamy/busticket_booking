@@ -1,0 +1,51 @@
+<section class="page-shell">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">My bookings</p>
+      <h1>Track every reservation from search to ticket number.</h1>
+    </div>
+  </div>
+
+  <p class="feedback success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="feedback" *ngIf="isLoading">Loading your bookings...</p>
+
+  <div class="booking-grid" *ngIf="!isLoading && bookings.length">
+    <article class="booking-card" *ngFor="let booking of bookings">
+      <div class="card-header">
+        <div>
+          <p class="route">{{ booking.route.departure_city }} to {{ booking.route.arrival_city }}</p>
+          <h2>{{ booking.passenger_name }}</h2>
+        </div>
+        <span class="status" [class.cancelled]="booking.status === 'cancelled'">
+          {{ booking.status }}
+        </span>
+      </div>
+
+      <div class="card-meta">
+        <span>Departure: {{ formatDate(booking.route.departure_time) }}</span>
+        <span>Booked: {{ formatDate(booking.booking_date) }}</span>
+        <span>Total: ?{{ booking.total_price }}</span>
+      </div>
+
+      <div class="ticket-list">
+        <article *ngFor="let ticket of booking.tickets">
+          <strong>{{ ticket.seat_number }}</strong>
+          <span>{{ ticket.ticket_number }}</span>
+        </article>
+      </div>
+
+      <button
+        type="button"
+        class="danger"
+        *ngIf="booking.status !== 'cancelled'"
+        (click)="cancelBooking(booking.booking_id)">
+        Cancel booking
+      </button>
+    </article>
+  </div>
+
+  <p class="feedback" *ngIf="!isLoading && !bookings.length && !errorMessage">
+    You have no bookings yet. Search for a route to create your first reservation.
+  </p>
+</section>

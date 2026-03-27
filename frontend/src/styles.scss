@@ -1,0 +1,71 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(248, 113, 113, 0.15), transparent 28%),
+    linear-gradient(180deg, #fffaf5 0%, #fff 32%, #fff7ed 100%);
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 18px;
+  padding: 0.95rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #b91c1c, #ef4444);
+  color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(185, 28, 28, 0.22);
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid #d6dce5;
+  border-radius: 16px;
+  font-family: inherit;
+  background: #fff;
+  color: #1f2937;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid rgba(239, 68, 68, 0.2);
+  border-color: #f87171;
+}
+
+a {
+  color: inherit;
+}
+
+h1, h2, h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+p {
+  line-height: 1.6;
+}

@@ -1,0 +1,55 @@
+<section class="auth-layout">
+  <div class="auth-copy">
+    <p class="eyebrow">Create account</p>
+    <h1>Join the app and move from route search to ticket confirmation.</h1>
+    <p>Registration is connected to the backend user API, so new accounts can immediately use protected booking flows.</p>
+  </div>
+
+  <form class="auth-card" [formGroup]="registerForm" (ngSubmit)="submit()">
+    <h2>Register</h2>
+
+    <div class="field-grid">
+      <label>
+        <span>Username</span>
+        <input type="text" formControlName="username" />
+      </label>
+
+      <label>
+        <span>Email</span>
+        <input type="email" formControlName="email" />
+      </label>
+
+      <label>
+        <span>Password</span>
+        <input type="password" formControlName="password" />
+      </label>
+
+      <label>
+        <span>Phone</span>
+        <input type="text" formControlName="phone" />
+      </label>
+
+      <label>
+        <span>First name</span>
+        <input type="text" formControlName="first_name" />
+      </label>
+
+      <label>
+        <span>Last name</span>
+        <input type="text" formControlName="last_name" />
+      </label>
+    </div>
+
+    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <button type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Creating account...' : 'Create account' }}
+    </button>
+
+    <p class="auth-link">
+      Already registered?
+      <a routerLink="/login">Sign in</a>
+    </p>
+  </form>
+</section>

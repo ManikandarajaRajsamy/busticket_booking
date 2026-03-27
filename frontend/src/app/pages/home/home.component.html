@@ -1,0 +1,99 @@
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">Built on your completed backend</p>
+    <h1>Search, compare, and book bus travel without leaving one flow.</h1>
+    <p class="subtitle">
+      This frontend now connects the auth, route search, booking, and payment APIs into a usable passenger experience.
+    </p>
+    <div class="hero-metrics">
+      <article>
+        <strong>Live search</strong>
+        <span>Departure, arrival, and travel date filters</span>
+      </article>
+      <article>
+        <strong>Protected checkout</strong>
+        <span>JWT-backed booking and payment flow</span>
+      </article>
+      <article>
+        <strong>Trip history</strong>
+        <span>View and cancel bookings from one place</span>
+      </article>
+    </div>
+  </div>
+
+  <form class="search-card" [formGroup]="searchForm" (ngSubmit)="searchRoutes()">
+    <h2>Find your next trip</h2>
+
+    <label>
+      <span>From</span>
+      <input type="text" formControlName="departure_city" placeholder="Chennai" />
+    </label>
+
+    <label>
+      <span>To</span>
+      <input type="text" formControlName="arrival_city" placeholder="Bengaluru" />
+    </label>
+
+    <label>
+      <span>Travel date</span>
+      <input type="date" formControlName="departure_date" />
+    </label>
+
+    <button type="submit" [disabled]="isLoading">
+      {{ isLoading ? 'Searching...' : 'Search buses' }}
+    </button>
+  </form>
+</section>
+
+<section class="results">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Search results</p>
+      <h2>Available routes</h2>
+    </div>
+    <p *ngIf="results.length">{{ results.length }} route(s) found</p>
+  </div>
+
+  <p class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="feedback" *ngIf="hasSearched && !isLoading && !results.length && !errorMessage">
+    No routes matched your current filters.
+  </p>
+
+  <div class="route-grid" *ngIf="results.length">
+    <article class="route-card" *ngFor="let route of results">
+      <div class="route-header">
+        <div>
+          <h3>{{ route.bus_name }}</h3>
+          <p>{{ route.bus_type }}</p>
+        </div>
+        <strong>Rs. {{ route.price }}</strong>
+      </div>
+
+      <div class="route-timeline">
+        <div>
+          <span>{{ formatTime(route.departure_time) }}</span>
+          <small>{{ route.departure_city }}</small>
+        </div>
+        <div class="timeline-line">
+          <small>{{ route.duration || 'On-time journey' }}</small>
+        </div>
+        <div>
+          <span>{{ formatTime(route.arrival_time) }}</span>
+          <small>{{ route.arrival_city }}</small>
+        </div>
+      </div>
+
+      <div class="route-meta">
+        <span>{{ formatDate(route.departure_time) }}</span>
+        <span>{{ route.available_seats }} seats left</span>
+        <span *ngIf="route.distance">{{ route.distance }} km</span>
+      </div>
+
+      <div class="amenities" *ngIf="getAmenities(route).length">
+        <span *ngFor="let amenity of getAmenities(route)">{{ amenity }}</span>
+      </div>
+
+      <button type="button" (click)="bookRoute(route.id)">Choose seats</button>
+    </article>
+  </div>
+</section>

@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://example.onrender.com/api'
+  apiUrl: 'https://busticket-booking-7a6a.onrender.com/api'
 };

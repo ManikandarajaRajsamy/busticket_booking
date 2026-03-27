@@ -45,8 +45,8 @@ Note:
 
 Render will:
 
-- install from `backend/requirements.txt`
-- start the API with `gunicorn "app:create_app()"`
+- install from the root [`requirements.txt`](/d:/busticket_booking/requirements.txt)
+- start the API with `gunicorn wsgi:app`
 - expose the health endpoint at `/api/health`
 
 ## Database
